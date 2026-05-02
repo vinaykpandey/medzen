@@ -26,7 +26,26 @@ class TokenResponse(BaseModel):
     class Config:
         json_schema_extra = {
             "example": {
-                "access_token": "mock-jwt-token",
+                "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
                 "token_type": "bearer"
+            }
+        }
+
+
+class UserResponse(BaseModel):
+    """User response schema"""
+    
+    id: int
+    email: EmailStr
+    full_name: str
+    role: str
+    
+    class Config:
+        json_schema_extra = {
+            "example": {
+                "id": 1,
+                "email": "admin@medzen.com",
+                "full_name": "Admin User",
+                "role": "admin"
             }
         }

@@ -8,7 +8,7 @@ import { useAuthStore } from '../store/authStore'
 export const ProtectedRoute = ({ children }) => {
   const { isAuthenticated } = useAuthStore()
 
-  if (!isAuthenticated()) {
+  if (!isAuthenticated) {
     return <Navigate to="/login" replace />
   }
 

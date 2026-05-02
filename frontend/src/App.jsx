@@ -1,19 +1,43 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
+import { useEffect } from 'react'
+import { useAuthStore } from './store/authStore'
+import LoginSecure from './pages/LoginSecure'
+import ProfileSecure from './pages/ProfileSecure'
+import ProtectedRouteSecure from './routes/ProtectedRouteSecure'
 import { LoginPage } from './pages/Login'
 import { DashboardPage } from './pages/Dashboard'
 import { ProtectedRoute } from './routes/ProtectedRoute'
 
 /**
- * App Component - Main application router
+ * App Component - Main application router with secure authentication
+ * Uses HTTP-only cookies for session management
  */
 function App() {
+  const fetchCurrentUser = useAuthStore((state) => state.fetchCurrentUser)
+
+  // Check if user is already logged in on app load
+  useEffect(() => {
+    fetchCurrentUser()
+  }, [fetchCurrentUser])
+
   return (
     <BrowserRouter>
       <Routes>
-        {/* Public route */}
-        <Route path="/login" element={<LoginPage />} />
+        {/* Secure Authentication Routes (HTTP-only Cookie based) */}
+        <Route path="/login" element={<LoginSecure />} />
+        
+        <Route
+          path="/profile"
+          element={
+            <ProtectedRouteSecure>
+              <ProfileSecure />
+            </ProtectedRouteSecure>
+          }
+        />
 
-        {/* Protected routes */}
+        {/* Original Routes (for reference/backward compatibility) */}
+        <Route path="/login-old" element={<LoginPage />} />
+
         <Route
           path="/dashboard"
           element={
@@ -23,11 +47,11 @@ function App() {
           }
         />
 
-        {/* Redirect root to dashboard or login */}
-        <Route path="/" element={<Navigate to="/dashboard" replace />} />
+        {/* Redirect root to profile (secure auth) or login */}
+        <Route path="/" element={<Navigate to="/profile" replace />} />
 
         {/* 404 fallback */}
-        <Route path="*" element={<Navigate to="/dashboard" replace />} />
+        <Route path="*" element={<Navigate to="/profile" replace />} />
       </Routes>
     </BrowserRouter>
   )

@@ -2,39 +2,32 @@ import axios from 'axios'
 
 /**
  * API Service - Central layer for all API calls
- * Handles authentication headers and error handling
+ * Uses HTTP-only cookies for authentication (no localStorage)
  */
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000/api'
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000/api/v1'
 
 const apiClient = axios.create({
   baseURL: API_BASE_URL,
   headers: {
     'Content-Type': 'application/json',
   },
+  withCredentials: true,  // Include cookies in all requests
 })
 
-// Add token to requests
-apiClient.interceptors.request.use((config) => {
-  const token = localStorage.getItem('token')
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`
-  }
-  return config
-})
-
-// Handle errors
+// Add error handling
 apiClient.interceptors.response.use(
   (response) => response.data,
   (error) => {
     if (error.response?.status === 401) {
-      localStorage.removeItem('token')
-      localStorage.removeItem('user')
+      // Handle unauthorized - user is not authenticated
       window.location.href = '/login'
     }
     return Promise.reject(error)
   }
 )
+
+export default apiClient
 
 /**
  * Appointments API
@@ -111,5 +104,3 @@ export const appointmentsAPI = {
     })
   }
 }
-
-export default apiClient
