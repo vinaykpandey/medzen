@@ -181,7 +181,7 @@ MedZen frontend is built with clean, scalable architecture following modern Reac
 ### `services/api.js`
 
 **Configuration**:
-- Base URL from `.env` (default: `http://localhost:5000/api`)
+- Base URL from `.env` (default: `http://localhost:8000/api`)
 - Axios instance with interceptors
 
 **Interceptors**:
